@@ -1,39 +1,59 @@
 'use strict';
 
-let title;
-let screens;
-let screenPrice;
-let adaptive;
-let rollback = 10;
-let allServicePrices;
-let fullPrice;
-let servicePercentPrice;
-let service1;
-let service2;
-let servicePrice;
+const appData = {
+  title: '',
+  screens: '',
+  screenPrice: 0,
+  adaptive: true,
+  rollback: 10,
+  servicePrice: 0,
+  allServicePrices: 0,
+  fullPrice: 0,
+  servicePercentPrice: 0,
+  service1: '',
+  service2: '',
+  discount: '',
+
+  // задает вопросы пользователю
+  asking: function () {
+    appData.title = prompt('Как называется ваш проект?', 'Калькулятор верстки');
+    appData.screens = prompt(
+      'Какие типы экранов нужно разработать?',
+      'Простые',
+    );
+
+    // Пока введённое значение НЕ является числом, снова спрашивать пользователя стоимость
+    do {
+      appData.screenPrice = prompt(
+        'Сколько будет стоить данная работа?',
+        '123',
+      );
+    } while (!isNumber(appData.screenPrice));
+    appData.screenPrice = parseFloat(appData.screenPrice);
+
+    appData.adaptive = confirm('Нужен ли адаптив на сайте?');
+  },
+
+  start: function () {
+    this.asking();
+    appData.allServicePrices = getAllServicePrices();
+    appData.fullPrice = getFullPrice();
+    appData.discount = getRollbackMessage(appData.fullPrice);
+    appData.servicePercentPrice = getServicePercentPrices();
+    appData.title = getTitle();
+    this.logger();
+  },
+
+  logger: function () {
+    for (let key in appData) {
+      console.log('Ключ: ' + key + ', Значение:' + appData[key]);
+    }
+  },
+};
 
 // функция проверки на число (true / false)
 const isNumber = function (num) {
   return !isNaN(parseFloat(num)) && isFinite(num);
-};
-
-// задает вопросы пользователю
-const asking = function () {
-  title = prompt('Как называется ваш проект?', 'Калькулятор верстки');
-  screens = prompt('Какие типы экранов нужно разработать?', 'Простые');
-
-  // Пока введённое значение НЕ является числом, снова спрашивать пользователя стоимость
-  do {
-    screenPrice = prompt('Сколько будет стоить данная работа?', '123');
-  } while (!isNumber(screenPrice));
-  screenPrice = parseFloat(screenPrice);
-
-  adaptive = confirm('Нужен ли адаптив на сайте?');
-};
-
-// показывает значение переменной и её тип
-const showTypeOf = function (variable) {
-  console.log(variable, typeof variable);
 };
 
 // собирает стоимости доп услуг и складывает их
@@ -41,28 +61,37 @@ const getAllServicePrices = function () {
   let sum = 0;
   for (let i = 0; i < 2; i++) {
     if (i === 0) {
-      service1 = prompt('Какой дополнительный тип услуги нужен?', 'Метрика');
+      appData.service1 = prompt(
+        'Какой дополнительный тип услуги нужен?',
+        'Метрика',
+      );
     } else if (i === 1) {
-      service2 = prompt('Какой дополнительный тип услуги нужен?', 'CMS');
+      appData.service2 = prompt(
+        'Какой дополнительный тип услуги нужен?',
+        'CMS',
+      );
     }
 
     do {
-      servicePrice = prompt('Сколько это будет стоить?', '12');
-    } while (!isNumber(servicePrice));
+      appData.servicePrice = prompt('Сколько это будет стоить?', '12');
+    } while (!isNumber(appData.servicePrice));
 
-    sum += Number(servicePrice);
+    sum += Number(appData.servicePrice);
   }
   return sum;
 };
 
 // считает общую стоимость
 function getFullPrice() {
-  return screenPrice + allServicePrices;
+  return appData.screenPrice + appData.allServicePrices;
 }
 
 // форматирует название
 const getTitle = function () {
-  return title.trim()[0].toUpperCase() + title.trim().substr(1).toLowerCase();
+  return (
+    appData.title.trim()[0].toUpperCase() +
+    appData.title.trim().substr(1).toLowerCase()
+  );
 };
 
 // определяет размер скидки
@@ -80,22 +109,10 @@ const getRollbackMessage = function (price) {
 
 // итоговая стоимость с учётом отката
 const getServicePercentPrices = function () {
-  return Math.ceil(fullPrice - fullPrice * (rollback / 100));
+  return Math.ceil(
+    appData.fullPrice - appData.fullPrice * (appData.rollback / 100),
+  );
 };
 
 // запуск функций
-asking();
-allServicePrices = getAllServicePrices();
-fullPrice = getFullPrice();
-servicePercentPrice = getServicePercentPrices();
-title = getTitle();
-
-showTypeOf(title);
-showTypeOf(screenPrice);
-showTypeOf(adaptive);
-showTypeOf(fullPrice);
-
-console.log('Стоимость доп услуг ' + allServicePrices + 'руб');
-console.log(`Тип экрана ${screens}`);
-console.log(getRollbackMessage(fullPrice));
-console.log('Итоговая стоимость ' + servicePercentPrice + 'руб');
+appData.start();
