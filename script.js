@@ -1,118 +1,48 @@
-'use strict';
+// 1
+const book = document.querySelectorAll('.book');
 
-const appData = {
-  title: '',
-  screens: '',
-  screenPrice: 0,
-  adaptive: true,
-  rollback: 10,
-  servicePrice: 0,
-  allServicePrices: 0,
-  fullPrice: 0,
-  servicePercentPrice: 0,
-  service1: '',
-  service2: '',
-  discount: '',
+book[1].after(book[0]);
+book[4].after(book[2]);
+book[4].after(book[3]);
+book[5].after(book[2]);
 
-  // задает вопросы пользователю
-  asking: function () {
-    appData.title = prompt('Как называется ваш проект?', 'Калькулятор верстки');
-    appData.screens = prompt(
-      'Какие типы экранов нужно разработать?',
-      'Простые',
-    );
+// 2
+const body = document.querySelector('body');
+body.style.backgroundImage = 'url("./image/you-dont-know-js.jpg")';
 
-    // Пока введённое значение НЕ является числом, снова спрашивать пользователя стоимость
-    do {
-      appData.screenPrice = prompt(
-        'Сколько будет стоить данная работа?',
-        '123',
-      );
-    } while (!isNumber(appData.screenPrice));
-    appData.screenPrice = parseFloat(appData.screenPrice);
+// 3
+const bookTitle = book[4].querySelector('h2 > a');
+bookTitle.textContent = 'Книга 3. this и Прототипы Объектов';
 
-    appData.adaptive = confirm('Нужен ли адаптив на сайте?');
-  },
+// 4
+const adv = document.querySelector('.adv');
+adv.remove();
 
-  start: function () {
-    this.asking();
-    appData.allServicePrices = getAllServicePrices();
-    appData.fullPrice = getFullPrice();
-    appData.discount = getRollbackMessage(appData.fullPrice);
-    appData.servicePercentPrice = getServicePercentPrices();
-    appData.title = getTitle();
-    this.logger();
-  },
+// 5
+const bookLi2 = book[0].querySelectorAll('ul > li');
+bookLi2[6].after(bookLi2[4]);
+bookLi2[6].after(bookLi2[5]);
+bookLi2[8].after(bookLi2[5]);
+bookLi2[8].after(bookLi2[4]);
+bookLi2[8].after(bookLi2[7]);
+bookLi2[4].after(bookLi2[7]);
+bookLi2[5].after(bookLi2[7]);
+bookLi2[10].before(bookLi2[2]);
 
-  logger: function () {
-    for (let key in appData) {
-      console.log('Ключ: ' + key + ', Значение:' + appData[key]);
-    }
-  },
-};
+const bookLi5 = book[5].querySelectorAll('ul > li');
+bookLi5[2].before(bookLi5[4]);
+bookLi5[4].before(bookLi5[3]);
+bookLi5[3].before(bookLi5[9]);
+bookLi5[6].after(bookLi5[5]);
+bookLi5[7].after(bookLi5[5]);
 
-// функция проверки на число (true / false)
-const isNumber = function (num) {
-  return !isNaN(parseFloat(num)) && isFinite(num);
-};
+// 6
+const bookUl6 = book[2].querySelector('ul');
+const bookLi6 = book[2].querySelectorAll('ul > li');
 
-// собирает стоимости доп услуг и складывает их
-const getAllServicePrices = function () {
-  let sum = 0;
-  for (let i = 0; i < 2; i++) {
-    if (i === 0) {
-      appData.service1 = prompt(
-        'Какой дополнительный тип услуги нужен?',
-        'Метрика',
-      );
-    } else if (i === 1) {
-      appData.service2 = prompt(
-        'Какой дополнительный тип услуги нужен?',
-        'CMS',
-      );
-    }
+const newText = document.createElement('li');
+newText.innerHTML = 'Глава 8: За пределами ES6';
+bookUl6.append(newText);
 
-    do {
-      appData.servicePrice = prompt('Сколько это будет стоить?', '12');
-    } while (!isNumber(appData.servicePrice));
-
-    sum += Number(appData.servicePrice);
-  }
-  return sum;
-};
-
-// считает общую стоимость
-function getFullPrice() {
-  return appData.screenPrice + appData.allServicePrices;
-}
-
-// форматирует название
-const getTitle = function () {
-  return (
-    appData.title.trim()[0].toUpperCase() +
-    appData.title.trim().substr(1).toLowerCase()
-  );
-};
-
-// определяет размер скидки
-const getRollbackMessage = function (price) {
-  if (price >= 30000) {
-    return 'Даем скидку в 10%';
-  } else if (price >= 15000 && price < 30000) {
-    return 'Даем скидку в 5%';
-  } else if (price >= 0 && price < 15000) {
-    return 'Скидка не предусмотрена';
-  } else {
-    return 'Что то пошло не так';
-  }
-};
-
-// итоговая стоимость с учётом отката
-const getServicePercentPrices = function () {
-  return Math.ceil(
-    appData.fullPrice - appData.fullPrice * (appData.rollback / 100),
-  );
-};
-
-// запуск функций
-appData.start();
+const newBookLi6 = bookUl6.querySelectorAll('li');
+newBookLi6[10].after(newBookLi6[9]);
