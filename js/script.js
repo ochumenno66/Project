@@ -77,7 +77,6 @@ const appData = {
   addScreens: function () {
     screens = document.querySelectorAll('.screen');
     appData.screens = [];
-    let isValid = true;
 
     screens.forEach(function (screen, index) {
       const select = screen.querySelector('select');
@@ -85,7 +84,7 @@ const appData = {
       const selectName = select.options[select.selectedIndex].textContent;
 
       if (select.value === '' || input.value === '') {
-        isValid = false;
+        return;
       } else {
         appData.screens.push({
           id: index,
